@@ -1,0 +1,32 @@
+<div
+  class="admin-layout"
+  [class.sidebar-collapsed]="!isMobile() && !isSidebarOpen()"
+>
+
+  <app-sidebar
+    [isOpen]="isSidebarOpen()"
+    (close)="closeSidebar()"
+  />
+
+  <div class="main-area">
+
+    <app-topbar
+      (menuToggle)="toggleSidebar()"
+    />
+
+    <main class="page-content">
+      <router-outlet />
+    </main>
+
+  </div>
+
+  @if (isMobile() && isSidebarOpen()) {
+    <button
+      class="sidebar-overlay"
+      type="button"
+      aria-label="Close sidebar"
+      (click)="closeSidebar()"
+    ></button>
+  }
+
+</div>

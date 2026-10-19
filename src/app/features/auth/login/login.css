@@ -1,0 +1,233 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.login-page {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  overflow: hidden;
+  background: var(--color-bg-primary);
+}
+
+.login-glow {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.login-glow-one {
+  top: -120px;
+  left: -80px;
+  background: var(--color-primary);
+}
+
+.login-glow-two {
+  right: -100px;
+  bottom: -140px;
+  background: var(--color-accent);
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 440px);
+  padding: 38px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 34px;
+}
+
+.brand-logo {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  color: white;
+  font-size: 19px;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: 18px;
+}
+
+.brand > span {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.login-heading {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.login-heading h1 {
+  margin-bottom: 8px;
+  font-size: 27px;
+}
+
+.login-heading p,
+.login-footer {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field > label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-field input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 13px;
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.form-field input:focus {
+  border-color: var(--color-primary);
+}
+
+.form-field input.invalid {
+  border-color: var(--color-danger);
+}
+
+.form-field input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 65px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  padding: 5px;
+  color: var(--color-primary-light);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.field-error {
+  display: block;
+  margin-top: 7px;
+  color: var(--color-danger);
+  font-size: 12px;
+}
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 0 22px;
+}
+
+.remember-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remember-option input {
+  accent-color: var(--color-primary);
+}
+
+.forgot-link {
+  padding: 0;
+  color: var(--color-primary-light);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.login-error {
+  margin-bottom: 16px;
+  padding: 11px 12px;
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.login-button {
+  width: 100%;
+  min-height: 47px;
+  color: white;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.login-button:hover:not(:disabled) {
+  background: #9333ea;
+}
+
+.login-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.login-footer {
+  margin-top: 23px;
+  text-align: center;
+  font-size: 11px;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 28px 22px;
+  }
+
+  .login-options {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

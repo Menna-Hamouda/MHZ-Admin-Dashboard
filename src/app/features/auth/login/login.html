@@ -1,0 +1,96 @@
+<div class="login-page">
+  <div class="login-glow login-glow-one"></div>
+  <div class="login-glow login-glow-two"></div>
+
+  <section class="login-card">
+    <div class="brand">
+      <div class="brand-logo">MHZ</div>
+      <span>COMPANY ADMIN</span>
+    </div>
+
+    <div class="login-heading">
+      <h1>Welcome Back</h1>
+      <p>Enter your credentials to access your account.</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+      <div class="form-field">
+        <label for="email">Username</label>
+
+        <input
+          id="email"
+          type="text"
+          formControlName="email"
+          placeholder="Enter your username"
+          autocomplete="username"
+          [class.invalid]="email.touched && email.invalid"
+        />
+
+        @if (email.touched && email.hasError('required')) {
+          <small class="field-error">Email is required</small>
+        } @else if (email.touched && email.hasError('email')) {
+          <small class="field-error">Please enter a valid email</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+
+        <div class="password-wrapper">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            [class.invalid]="password.touched && password.invalid"
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+
+        @if (password.touched && password.hasError('required')) {
+          <small class="field-error">Password is required</small>
+        }
+      </div>
+
+      <div class="login-options">
+        <label class="remember-option">
+          <input type="checkbox" formControlName="rememberMe" />
+          <span>Remember me</span>
+        </label>
+
+        <button
+          type="button"
+          class="forgot-link"
+          (click)="errorMessage.set('Password recovery will be available after connecting the backend.')"
+        >
+          Forgot Password?
+        </button>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="login-error" role="alert">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'SIGNING IN...' : 'LOGIN' }}
+      </button>
+    </form>
+
+    <p class="login-footer">Secure access to your workspace</p>
+  </section>
+</div>

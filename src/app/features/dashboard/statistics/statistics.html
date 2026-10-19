@@ -1,0 +1,49 @@
+
+<section class="statistics-grid">
+
+  @for (stat of stats; track stat.type) {
+    <article class="stat-card">
+
+      <div class="stat-card-header">
+        <span class="stat-icon" aria-hidden="true">
+          {{ stat.icon }}
+        </span>
+
+        <span class="stat-growth">
+          <span aria-hidden="true">↑</span>
+          {{ stat.growth }}
+        </span>
+      </div>
+
+      <div class="stat-card-body">
+        <p class="stat-title">
+          {{ stat.title }}
+        </p>
+
+        @if (stat.type === 'users') {
+          <h2 class="stat-value">
+            @if (totalUsers !== null) {
+              {{ totalUsers | number }}
+            } @else {
+              <span class="loading-value">...</span>
+            }
+          </h2>
+        } @else if (stat.type === 'products') {
+          <h2 class="stat-value">
+            @if (totalProducts !== null) {
+              {{ totalProducts | number }}
+            } @else {
+              <span class="loading-value">...</span>
+            }
+          </h2>
+        } @else {
+          <h2 class="stat-value">
+            {{ stat.value }}
+          </h2>
+        }
+      </div>
+
+    </article>
+  }
+
+</section>

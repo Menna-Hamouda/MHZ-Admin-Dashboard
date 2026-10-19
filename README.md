@@ -1,3 +1,41 @@
+
+# MHZ Admin Dashboard
+
+A responsive admin dashboard built with Angular.
+
+## Demo Login Credentials
+
+This project uses [DummyJSON](https://dummyjson.com/docs/auth) for demo authentication.
+
+| Role | Username | Password |
+|---|---|---|
+| Admin | `emilys` | `emilyspass` |
+
+**Login instructions:**
+1. Run the Angular application locally.
+2. Open the login page.
+3. Enter the demo username and password above.
+4. Click Login to access the dashboard.
+
+**Note:** Authentication uses a public demo API. User roles are assigned locally for demonstration purposes and are not suitable for production use.
+
+## Technologies
+
+- Angular
+- TypeScript
+- HTML
+- CSS
+- DummyJSON API
+
+
+
+
+
+
+
+
+
+
 # WebAdminPanel
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.

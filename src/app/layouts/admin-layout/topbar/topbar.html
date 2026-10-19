@@ -1,0 +1,216 @@
+<header class="topbar">
+
+  <!-- Left -->
+  <div class="topbar-left">
+
+    <button
+      type="button"
+      class="icon-button menu-button"
+      aria-label="Toggle sidebar"
+      (click)="toggleMenu()"
+    >
+      ☰
+    </button>
+
+    <div class="page-heading">
+      <span class="page-title">Dashboard</span>
+      <span class="page-subtitle">
+        Overview of your company
+      </span>
+    </div>
+
+  </div>
+
+  <!-- Right -->
+  <div class="topbar-right">
+
+    <!-- Notifications -->
+    <div class="dropdown-container">
+
+      <button
+        type="button"
+        class="icon-button notification-button"
+        aria-label="Notifications"
+        [attr.aria-expanded]="isNotificationsOpen()"
+        (click)="toggleNotifications()"
+      >
+        🔔
+
+        @if (unreadCount() > 0) {
+          <span class="notification-badge">
+            {{ unreadCount() }}
+          </span>
+        }
+      </button>
+
+      @if (isNotificationsOpen()) {
+        <div class="dropdown notification-dropdown">
+
+          <div class="dropdown-header">
+            <div>
+              <h3>Notifications</h3>
+              <span>
+                {{ unreadCount() }} unread notifications
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="mark-read-button"
+              (click)="markAllAsRead()"
+              [disabled]="unreadCount() === 0"
+            >
+              Mark all as read
+            </button>
+          </div>
+
+          <div class="notification-list">
+
+            @for (notification of notifications(); track notification.id) {
+              <button
+                type="button"
+                class="notification-item"
+                [class.is-read]="notification.read"
+                (click)="markAsRead(notification.id)"
+              >
+                <span
+                  class="notification-dot"
+                  [class.warning]="notification.type === 'warning'"
+                  [class.success]="notification.type === 'success'"
+                  [class.hidden-dot]="notification.read"
+                ></span>
+
+                <span class="notification-content">
+                  <strong>{{ notification.title }}</strong>
+                  <small>{{ notification.message }}</small>
+                  <small class="notification-time">
+                    {{ notification.time }}
+                  </small>
+                </span>
+              </button>
+            } @empty {
+              <div class="empty-notifications">
+                <span>🔔</span>
+                <p>No notifications yet</p>
+              </div>
+            }
+
+          </div>
+
+          <button
+            type="button"
+            class="view-all-button"
+            (click)="openNotifications()"
+          >
+            View All Notifications
+          </button>
+
+        </div>
+      }
+
+    </div>
+
+    <!-- User Menu -->
+    <div class="dropdown-container">
+
+      <button
+        type="button"
+        class="user-button"
+        (click)="toggleUserMenu()"
+        [attr.aria-expanded]="isUserMenuOpen()"
+        aria-label="Open user menu"
+      >
+        <span class="avatar">
+          {{ avatarLetter }}
+        </span>
+
+        <span class="user-info">
+          <strong>{{ displayName }}</strong>
+          <small>{{ displayRole }}</small>
+        </span>
+
+        <span class="chevron">▼</span>
+      </button>
+
+      @if (isUserMenuOpen()) {
+        <div class="dropdown user-dropdown">
+
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="openProfile()"
+          >
+            <span>♙</span>
+            <span>My Profile</span>
+          </button>
+
+          <button
+            type="button"
+            class="dropdown-item"
+            (click)="openSettings()"
+          >
+            <span>⚙</span>
+            <span>Settings</span>
+          </button>
+
+          <div class="dropdown-divider"></div>
+
+          <button
+            type="button"
+            class="dropdown-item danger"
+            (click)="openLogoutModal()"
+          >
+            <span>↪</span>
+            <span>Logout</span>
+          </button>
+
+        </div>
+      }
+
+    </div>
+
+  </div>
+
+</header>
+
+<!-- Logout Confirmation Modal -->
+@if (isLogoutModalOpen()) {
+  <div
+    class="modal-overlay"
+    (click)="closeLogoutModal()"
+  >
+    <section
+      class="logout-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="logout-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="logout-icon">↪</div>
+
+      <h2 id="logout-title">Log out?</h2>
+
+      <p>
+        Are you sure you want to log out of your account?
+      </p>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="closeLogoutModal()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="confirm-logout-button"
+          (click)="confirmLogout()"
+        >
+          Yes, Log out
+        </button>
+      </div>
+    </section>
+  </div>
+}

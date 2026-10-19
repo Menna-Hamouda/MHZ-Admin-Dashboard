@@ -1,0 +1,62 @@
+
+<section class="user-details-page">
+  <header class="details-header">
+    <div>
+      <h1>User Details</h1>
+      <p>View user information</p>
+    </div>
+
+    <a class="secondary-btn" routerLink="/users">Back to Users</a>
+  </header>
+
+  @if (isLoading) {
+    <div class="details-card">Loading user...</div>
+  } @else if (errorMessage) {
+    <div class="details-card details-error" role="alert">
+      {{ errorMessage }}
+    </div>
+  } @else if (user) {
+    <article class="details-card">
+      <div class="profile-header">
+        <img
+          class="profile-avatar"
+          [src]="user.image"
+          [alt]="user.firstName + ' ' + user.lastName"
+        />
+
+        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+        <p>{{ user.username || 'User account' }}</p>
+        <span class="profile-badge">User ID: {{ user.id }}</span>
+      </div>
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <span>Email</span>
+          <strong>{{ user.email }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Phone</span>
+          <strong>{{ user.phone }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Birth Date</span>
+          <strong>{{ user.birthDate ? (user.birthDate | date:'longDate') : 'Not available' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Company</span>
+          <strong>{{ 'Company data not loaded' }}</strong>
+        </div>
+      </div>
+
+      <footer class="details-actions">
+        <button class="primary-btn" type="button" (click)="editUser()">
+          Edit User
+        </button>
+      </footer>
+    </article>
+  }
+</section>
+

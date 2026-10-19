@@ -1,0 +1,123 @@
+
+<section class="details-page">
+  <button class="back-btn" type="button" (click)="goBack()">
+    ← Back to Products
+  </button>
+
+  @if (isLoading) {
+    <div class="details-state">Loading product details...</div>
+  } @else if (errorMessage) {
+    <div class="details-state error-text">{{ errorMessage }}</div>
+    <a routerLink="/products" class="secondary-link">Return to Products</a>
+  } @else if (product) {
+    <header class="details-heading">
+      <div>
+        <p class="eyebrow">PRODUCT MANAGEMENT</p>
+        <h1>Product Details</h1>
+        <p class="subtitle">View complete information about this product.</p>
+      </div>
+
+      <a
+        class="primary-btn"
+        [routerLink]="['/products', product.id, 'edit']"
+      >
+        ✎ Edit Product
+      </a>
+    </header>
+
+    <div class="details-grid">
+      <section class="image-panel">
+        <div class="main-image-wrap">
+          <img
+            class="main-image"
+            [src]="product.thumbnail"
+            [alt]="product.title"
+          />
+        </div>
+
+        @if (product.images && product.images.length > 1) {
+          <div class="thumbnail-row">
+            @for (image of product.images.slice(0, 4); track image) {
+              <img [src]="image" [alt]="product.title" />
+            }
+          </div>
+        }
+      </section>
+
+      <section class="information-panel">
+        <div class="product-topline">
+          <span class="category-badge">{{ product.category }}</span>
+          <span class="stock-badge" [ngClass]="stockClass">
+            {{ stockLabel }}
+          </span>
+        </div>
+
+        <h2 class="product-title">{{ product.title }}</h2>
+
+        <p class="brand-line">
+          Brand: <strong>{{ product.brand || 'Unbranded' }}</strong>
+        </p>
+
+        <div class="price-row">
+          <strong class="price">
+            {{ product.price | currency:'USD':'symbol':'1.2-2' }}
+          </strong>
+
+          @if (product.discountPercentage > 0) {
+            <span class="discount">
+              {{ product.discountPercentage | number:'1.0-1' }}% OFF
+            </span>
+          }
+        </div>
+
+        <div class="rating-line">
+          <span class="stars">★</span>
+          <strong>{{ product.rating | number:'1.1-1' }}</strong>
+          <span>Customer rating</span>
+        </div>
+
+        <div class="detail-divider"></div>
+
+        <h3>Description</h3>
+        <p class="description">{{ product.description }}</p>
+
+        <div class="detail-divider"></div>
+
+        <div class="information-grid">
+          <div class="information-item">
+            <span>Product ID</span>
+            <strong>#{{ product.id }}</strong>
+          </div>
+
+          <div class="information-item">
+            <span>Available Stock</span>
+            <strong>{{ product.stock }} units</strong>
+          </div>
+
+          <div class="information-item">
+            <span>Category</span>
+            <strong>{{ product.category }}</strong>
+          </div>
+
+          <div class="information-item">
+            <span>Discount</span>
+            <strong>{{ product.discountPercentage }}%</strong>
+          </div>
+        </div>
+
+        <div class="details-actions">
+          <a
+            class="primary-btn"
+            [routerLink]="['/products', product.id, 'edit']"
+          >
+            Edit Product
+          </a>
+          <a routerLink="/products" class="secondary-link">
+            All Products
+          </a>
+        </div>
+      </section>
+    </div>
+  }
+</section>
+

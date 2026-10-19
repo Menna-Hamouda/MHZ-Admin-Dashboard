@@ -1,0 +1,181 @@
+
+<section class="orders-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">SALES MANAGEMENT</p>
+      <h1>Orders</h1>
+      <p class="page-description">Manage customer orders.</p>
+    </div>
+
+    <button class="refresh-btn" type="button" (click)="loadOrders()">
+      ↻ Refresh
+    </button>
+  </header>
+
+  <div class="stats-grid">
+    <article class="stat-card">
+      <span class="stat-icon purple">▤</span>
+      <div>
+        <p>Total Orders</p>
+        <h2>{{ orders.length }}</h2>
+        <small>Orders in the catalog</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-icon orange">◷</span>
+      <div>
+        <p>Pending Orders</p>
+        <h2>{{ pendingCount }}</h2>
+        <small>Awaiting processing</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-icon green">✓</span>
+      <div>
+        <p>Completed Orders</p>
+        <h2>{{ completedCount }}</h2>
+        <small>Successfully completed</small>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-icon pink">$</span>
+      <div>
+        <p>Order Value</p>
+        <h2>{{ totalRevenue | currency:'USD':'symbol':'1.0-0' }}</h2>
+        <small>Excludes cancelled orders</small>
+      </div>
+    </article>
+  </div>
+
+  <section class="orders-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>All Orders</h2>
+        <p>Search and track your customer orders.</p>
+      </div>
+      <span class="result-count">{{ filteredOrders.length }} orders</span>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <span>⌕</span>
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Search order or customer..."
+          aria-label="Search orders"
+        />
+      </div>
+
+      <select [(ngModel)]="selectedStatus" aria-label="Filter by status">
+        <option value="All">All Statuses</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="selectedDate" aria-label="Filter by date">
+        <option value="All">All Dates</option>
+        <option value="Today">Today</option>
+        <option value="This Week">This Week</option>
+        <option value="This Month">This Month</option>
+      </select>
+    </div>
+
+    @if (isLoading) {
+      <div class="state-message">
+        <span class="loader"></span>
+        <p>Loading orders...</p>
+      </div>
+    } @else if (errorMessage) {
+      <div class="state-message error-message">
+        <p>{{ errorMessage }}</p>
+        <button class="refresh-btn" type="button" (click)="loadOrders()">
+          Try Again
+        </button>
+      </div>
+    } @else if (filteredOrders.length === 0) {
+      <div class="state-message">
+        <span class="empty-icon">⌕</span>
+        <h3>No orders found</h3>
+        <p>Try changing your search or filters.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (order of filteredOrders; track order.id) {
+              <tr>
+                <td>
+                  <a
+                    class="order-id"
+                    [routerLink]="['/orders', order.id]"
+                  >
+                    {{ formatOrderId(order.id) }}
+                  </a>
+                </td>
+
+                <td>
+                  <div class="customer-cell">
+                    <span class="avatar">
+                      {{ order.customer.name.charAt(0).toUpperCase() }}
+                    </span>
+                    <span>
+                      <strong>{{ order.customer.name }}</strong>
+                      <small>{{ order.customer.email }}</small>
+                    </span>
+                  </div>
+                </td>
+
+                <td>{{ order.products.length }} items</td>
+
+                <td class="total-cell">
+                  {{ order.total | currency:'USD':'symbol':'1.2-2' }}
+                </td>
+
+                <td>
+                  <span class="date-cell">
+                    {{ order.date | date:'MMM d, y' }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                    <span class="status-dot"></span>
+                    {{ order.status }}
+                  </span>
+                </td>
+
+                <td>
+                  <a
+                    class="view-btn"
+                    [routerLink]="['/orders', order.id]"
+                    [attr.aria-label]="'View order ' + order.id"
+                  >
+                    View →
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>
+

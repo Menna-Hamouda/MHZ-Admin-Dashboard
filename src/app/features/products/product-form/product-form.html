@@ -1,0 +1,313 @@
+
+<section class="form-page">
+  <button type="button" class="back-btn" (click)="cancel()">
+    ← Back
+  </button>
+
+  <header class="form-heading">
+    <div>
+      <p class="eyebrow">PRODUCT MANAGEMENT</p>
+      <h1>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h1>
+      <p>
+        {{
+          isEditMode
+            ? 'Update the information for this product.'
+            : 'Fill in the details to add a product to your catalog.'
+        }}
+      </p>
+    </div>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">{{ successMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="form-state">Loading product information...</div>
+  } @else {
+    <form
+      #productForm="ngForm"
+      (ngSubmit)="onSubmit(productForm)"
+      novalidate
+    >
+      <div class="form-layout">
+        <div class="form-main">
+          <section class="form-card">
+            <div class="section-heading">
+              <div class="section-number">01</div>
+              <div>
+                <h2>Basic Information</h2>
+                <p>Enter the main details of your product.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="title">Product Name <span>*</span></label>
+              <input
+                id="title"
+                name="title"
+                type="text"
+                [(ngModel)]="formData.title"
+                required
+                minlength="3"
+                maxlength="120"
+                #title="ngModel"
+                placeholder="e.g. Premium Wireless Headphones"
+              />
+              @if (title.invalid && title.touched) {
+                <small class="field-error">
+                  Product name is required (at least 3 characters).
+                </small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="description">Description <span>*</span></label>
+              <textarea
+                id="description"
+                name="description"
+                [(ngModel)]="formData.description"
+                required
+                minlength="10"
+                rows="5"
+                #description="ngModel"
+                placeholder="Describe the product and its features..."
+              ></textarea>
+              @if (description.invalid && description.touched) {
+                <small class="field-error">
+                  Description must contain at least 10 characters.
+                </small>
+              }
+            </div>
+
+            <div class="fields-grid">
+              <div class="field">
+                <label for="category">Category <span>*</span></label>
+                <select
+                  id="category"
+                  name="category"
+                  [(ngModel)]="formData.category"
+                  required
+                  #category="ngModel"
+                >
+                  <option value="" disabled>Select a category</option>
+                  @for (item of categoryOptions; track item.value) {
+                    <option [value]="item.value">{{ item.label }}</option>
+                  }
+                </select>
+                @if (category.invalid && category.touched) {
+                  <small class="field-error">Choose a category.</small>
+                }
+              </div>
+
+              <div class="field">
+                <label for="brand">Brand</label>
+                <input
+                  id="brand"
+                  name="brand"
+                  type="text"
+                  [(ngModel)]="formData.brand"
+                  maxlength="100"
+                  placeholder="e.g. MHZ Brand"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="form-card">
+            <div class="section-heading">
+              <div class="section-number">02</div>
+              <div>
+                <h2>Pricing & Inventory</h2>
+                <p>Set the price, discount, and available quantity.</p>
+              </div>
+            </div>
+
+            <div class="fields-grid">
+              <div class="field">
+                <label for="price">Price (USD) <span>*</span></label>
+                <input
+                  id="price"
+                  name="price"
+                  type="number"
+                  [(ngModel)]="formData.price"
+                  required
+                  min="0"
+                  step="0.01"
+                  #price="ngModel"
+                />
+                @if (price.invalid && price.touched) {
+                  <small class="field-error">Enter a valid price.</small>
+                }
+              </div>
+
+              <div class="field">
+                <label for="discount">Discount (%)</label>
+                <input
+                  id="discount"
+                  name="discountPercentage"
+                  type="number"
+                  [(ngModel)]="formData.discountPercentage"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
+
+              <div class="field">
+                <label for="stock">Stock Quantity <span>*</span></label>
+                <input
+                  id="stock"
+                  name="stock"
+                  type="number"
+                  [(ngModel)]="formData.stock"
+                  required
+                  min="0"
+                  step="1"
+                  #stock="ngModel"
+                />
+                @if (stock.invalid && stock.touched) {
+                  <small class="field-error">
+                    Stock must be zero or greater.
+                  </small>
+                }
+              </div>
+
+              <div class="field">
+                <label for="status">Status</label>
+                <select id="status" name="status" ngModel="active">
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+                <small class="field-hint">
+                  Demo field; the API does not save product status.
+                </small>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-card">
+            <div class="section-heading">
+              <div class="section-number">03</div>
+              <div>
+                <h2>Product Image</h2>
+                <p>Choose an image or provide a public image URL.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="imageUrl">Image URL</label>
+              <input
+                id="imageUrl"
+                name="thumbnail"
+                type="url"
+                [(ngModel)]="formData.thumbnail"
+                (ngModelChange)="onImageUrlChange($event)"
+                placeholder="https://example.com/product.jpg"
+              />
+            </div>
+
+            <div class="upload-area">
+              <div class="upload-symbol">↑</div>
+              <strong>Choose an image from your device</strong>
+              <p>Image preview only · Maximum size 5 MB</p>
+              <label class="upload-btn" for="imageFile">
+                Browse Files
+              </label>
+              <input
+                id="imageFile"
+                type="file"
+                accept="image/*"
+                (change)="onImageSelected($event)"
+              />
+            </div>
+
+            @if (imagePreview) {
+              <div class="image-preview-wrap">
+                <span>Image Preview</span>
+                <img
+                  [src]="imagePreview"
+                  alt="Product preview"
+                  class="image-preview"
+                />
+              </div>
+            }
+          </section>
+        </div>
+
+        <aside class="form-sidebar">
+          <section class="form-card preview-card">
+            <h2>Product Preview</h2>
+
+            @if (imagePreview) {
+              <img
+                class="preview-image"
+                [src]="imagePreview"
+                [alt]="formData.title || 'Product preview'"
+              />
+            } @else {
+              <div class="preview-placeholder">No image selected</div>
+            }
+
+            <h3>{{ formData.title || 'Product name' }}</h3>
+            <p class="preview-brand">
+              {{ formData.brand || 'Brand name' }}
+            </p>
+
+            <div class="preview-price">
+              {{ (formData.price || 0) | currency:'USD':'symbol':'1.2-2' }}
+            </div>
+
+            <span class="preview-category">
+              {{ formData.category || 'No category selected' }}
+            </span>
+
+            <div class="preview-stock">
+              <span>Stock quantity</span>
+              <strong>{{ formData.stock || 0 }}</strong>
+            </div>
+          </section>
+
+          <section class="form-card tips-card">
+            <h3>Quick Tips</h3>
+            <ul>
+              <li>Use a clear product name.</li>
+              <li>Write a helpful description.</li>
+              <li>Double-check the price and stock.</li>
+              <li>Use a public image URL if you want the image saved by this demo API.</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+
+      <div class="form-footer">
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="cancel()"
+          [disabled]="isSaving"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="isSaving"
+        >
+          @if (isSaving) {
+            Saving...
+          } @else {
+            {{ isEditMode ? 'Save Changes' : 'Create Product' }}
+          }
+        </button>
+      </div>
+    </form>
+  }
+</section>
+

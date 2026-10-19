@@ -1,0 +1,105 @@
+
+<section class="user-form-page">
+  <header class="form-page-header">
+    <div>
+      <h1>{{ userId ? 'Edit User' : 'Add New User' }}</h1>
+      <p>
+        {{ userId ? 'Update user information' : 'Create a new user account' }}
+      </p>
+    </div>
+  </header>
+
+  @if (isLoading) {
+    <div class="form-card">Loading user...</div>
+  } @else {
+    <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="form-grid">
+        <label class="form-field">
+          <span>First Name *</span>
+          <input formControlName="firstName" placeholder="First name" />
+          @if (form.controls.firstName.touched && form.controls.firstName.invalid) {
+            <small>First Name is required.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Last Name *</span>
+          <input formControlName="lastName" placeholder="Last name" />
+          @if (form.controls.lastName.touched && form.controls.lastName.invalid) {
+            <small>Last Name is required.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Email *</span>
+          <input type="email" formControlName="email" placeholder="name@example.com" />
+          @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+            <small>Email is required.</small>
+          } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+            <small>Email is invalid.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Phone *</span>
+          <input type="tel" formControlName="phone" placeholder="Phone number" />
+          @if (form.controls.phone.touched && form.controls.phone.invalid) {
+            <small>Phone is required.</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>Role *</span>
+          <select formControlName="role">
+            <option value="Admin">Admin</option>
+            <option value="Manager">Manager</option>
+            <option value="Employee">Employee</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Status *</span>
+          <select formControlName="status">
+            <option value="Active">Active</option>
+            <option value="Blocked">Blocked</option>
+          </select>
+        </label>
+
+        @if (!userId) {
+          <label class="form-field full-width">
+            <span>Password *</span>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Enter password"
+              autocomplete="new-password"
+            />
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+              <small>Password is required.</small>
+            }
+          </label>
+        }
+      </div>
+
+      @if (errorMessage) {
+        <p class="form-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <footer class="form-actions">
+        <a class="secondary-btn" routerLink="/users">Cancel</a>
+
+        <button class="primary-btn" type="submit" [disabled]="isSaving">
+          {{
+            isSaving
+              ? 'Saving...'
+              : userId
+                ? 'Save Changes'
+                : 'Create User'
+          }}
+        </button>
+      </footer>
+    </form>
+  }
+</section>
+

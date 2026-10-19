@@ -1,0 +1,63 @@
+
+<aside
+  class="sidebar"
+  [class.open]="isOpen"
+>
+  <!-- Brand -->
+  <div class="brand">
+    <div class="brand-mark">
+      M
+    </div>
+
+    @if (isOpen) {
+      <div class="brand-content">
+        <span class="brand-name">MHZ</span>
+        <span class="brand-label">ADMIN</span>
+      </div>
+    }
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navigation" aria-label="Main navigation">
+
+    @for (item of navItems(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+        class="nav-item"
+        (click)="closeOnMobile()"
+        [attr.aria-label]="item.label"
+        [attr.title]="!isOpen ? item.label : null"
+      >
+        <span class="nav-icon">{{ item.icon }}</span>
+
+        @if (isOpen) {
+          <span class="nav-label">{{ item.label }}</span>
+        }
+      </a>
+    }
+
+  </nav>
+
+  <!-- Bottom Actions -->
+  <div class="sidebar-footer">
+
+    <div class="divider"></div>
+
+    <button
+      type="button"
+      class="nav-item logout-button"
+      (click)="onLogout()"
+      aria-label="Logout"
+      [attr.title]="!isOpen ? 'Logout' : null"
+    >
+      <span class="nav-icon">↪</span>
+
+      @if (isOpen) {
+        <span class="nav-label">Logout</span>
+      }
+    </button>
+
+  </div>
+</aside>

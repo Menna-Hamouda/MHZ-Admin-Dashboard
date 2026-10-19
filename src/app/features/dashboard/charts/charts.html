@@ -1,0 +1,69 @@
+
+<section class="charts-grid">
+
+  <!-- Sales Overview -->
+  <article class="chart-card">
+    <header class="chart-header">
+      <div>
+        <h2>Sales Overview</h2>
+        <p>Monthly sales performance</p>
+      </div>
+
+      <span class="chart-badge">Last 5 months</span>
+    </header>
+
+    <div class="sales-chart-container">
+      <canvas
+        #salesCanvas
+        role="img"
+        aria-label="Line chart showing monthly sales from January to May">
+      </canvas>
+    </div>
+  </article>
+
+  <!-- Orders Status -->
+  <article class="chart-card">
+    <header class="chart-header">
+      <div>
+        <h2>Orders Status</h2>
+        <p>Distribution of orders by status</p>
+      </div>
+    </header>
+
+    <div class="orders-chart-container">
+      <canvas
+        #ordersCanvas
+        role="img"
+        aria-label="Doughnut chart showing order status percentages">
+      </canvas>
+    </div>
+
+    <div class="orders-legend">
+      <div class="legend-item">
+        <span class="legend-dot completed"></span>
+        <span class="legend-label">Completed</span>
+        <strong>60%</strong>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-dot processing"></span>
+        <span class="legend-label">Processing</span>
+        <strong>20%</strong>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-dot pending"></span>
+        <span class="legend-label">Pending</span>
+        <strong>15%</strong>
+      </div>
+
+      <div class="legend-item">
+        <span class="legend-dot cancelled"></span>
+        <span class="legend-label">Cancelled</span>
+        <strong>5%</strong>
+      </div>
+    </div>
+  </article>
+
+</section>
+

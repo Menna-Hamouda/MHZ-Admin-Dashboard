@@ -1,0 +1,249 @@
+<section class="settings-page">
+  <header class="page-header">
+    <div>
+      <h1>Settings</h1>
+      <p>Manage your company and account preferences.</p>
+    </div>
+  </header>
+
+  <nav class="settings-tabs" aria-label="Settings sections">
+    <button
+      type="button"
+      [class.active]="activeTab() === 'general'"
+      [attr.aria-selected]="activeTab() === 'general'"
+      (click)="setTab('general')"
+    >
+      General
+    </button>
+
+    <button
+      type="button"
+      [class.active]="activeTab() === 'profile'"
+      [attr.aria-selected]="activeTab() === 'profile'"
+      (click)="setTab('profile')"
+    >
+      Profile
+    </button>
+
+    <button
+      type="button"
+      [class.active]="activeTab() === 'security'"
+      [attr.aria-selected]="activeTab() === 'security'"
+      (click)="setTab('security')"
+    >
+      Security
+    </button>
+  </nav>
+
+  @if (successMessage()) {
+    <div class="feedback success" role="status">
+      <span>✓</span> {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="feedback error" role="alert">
+      <span>!</span> {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="settings-card">
+    @if (activeTab() === 'general') {
+      <form [formGroup]="generalForm" (ngSubmit)="saveGeneral()">
+        <div class="section-heading">
+          <h2>General Settings</h2>
+          <p>Update your company information.</p>
+        </div>
+
+        <div class="settings-form-grid">
+          <div class="form-field">
+            <label for="companyName">Company Name</label>
+            <input id="companyName" formControlName="companyName" />
+
+            @if (generalForm.controls.companyName.touched &&
+                 generalForm.controls.companyName.invalid) {
+              <small>Company name is required</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="companyEmail">Company Email</label>
+            <input
+              id="companyEmail"
+              type="email"
+              formControlName="companyEmail"
+            />
+
+            @if (generalForm.controls.companyEmail.touched &&
+                 generalForm.controls.companyEmail.hasError('required')) {
+              <small>Company email is required</small>
+            } @else if (generalForm.controls.companyEmail.touched &&
+                        generalForm.controls.companyEmail.hasError('email')) {
+              <small>Please enter a valid email</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="companyPhone">Phone</label>
+            <input
+              id="companyPhone"
+              type="tel"
+              formControlName="phone"
+            />
+
+            @if (generalForm.controls.phone.touched &&
+                 generalForm.controls.phone.invalid) {
+              <small>Phone is required</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="companyAddress">Address</label>
+            <input id="companyAddress" formControlName="address" />
+
+            @if (generalForm.controls.address.touched &&
+                 generalForm.controls.address.invalid) {
+              <small>Address is required</small>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit" [disabled]="loading()">
+            {{ loading() ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    }
+
+    @if (activeTab() === 'profile') {
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="section-heading">
+          <h2>Profile</h2>
+          <p>Update your personal information and profile image.</p>
+        </div>
+
+        <div class="profile-image-section">
+          <div class="profile-avatar">
+            @if (imagePreview()) {
+              <img [src]="imagePreview()" alt="Profile preview" />
+            } @else {
+              <span>👤</span>
+            }
+          </div>
+
+          <div class="upload-control">
+            <label for="profileImage">Profile Image</label>
+            <input
+              id="profileImage"
+              type="file"
+              accept="image/*"
+              (change)="onImageSelected($event)"
+            />
+            <small>Image file up to 2 MB.</small>
+          </div>
+        </div>
+
+        <div class="settings-form-grid">
+          <div class="form-field">
+            <label for="profileName">Name</label>
+            <input id="profileName" formControlName="name" />
+
+            @if (profileForm.controls.name.touched &&
+                 profileForm.controls.name.invalid) {
+              <small>Name is required</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="profileEmail">Email</label>
+            <input
+              id="profileEmail"
+              type="email"
+              formControlName="email"
+            />
+
+            @if (profileForm.controls.email.touched &&
+                 profileForm.controls.email.hasError('required')) {
+              <small>Email is required</small>
+            } @else if (profileForm.controls.email.touched &&
+                        profileForm.controls.email.hasError('email')) {
+              <small>Please enter a valid email</small>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit" [disabled]="loading()">
+            {{ loading() ? 'Updating...' : 'Update Profile' }}
+          </button>
+        </div>
+      </form>
+    }
+
+    @if (activeTab() === 'security') {
+      <form [formGroup]="securityForm" (ngSubmit)="changePassword()">
+        <div class="section-heading">
+          <h2>Security</h2>
+          <p>Change your password to keep your account secure.</p>
+        </div>
+
+        <div class="security-fields">
+          <div class="form-field">
+            <label for="currentPassword">Current Password</label>
+            <input
+              id="currentPassword"
+              type="password"
+              formControlName="currentPassword"
+              autocomplete="current-password"
+            />
+
+            @if (securityForm.controls.currentPassword.touched &&
+                 securityForm.controls.currentPassword.invalid) {
+              <small>Current password is required</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="newPassword">New Password</label>
+            <input
+              id="newPassword"
+              type="password"
+              formControlName="newPassword"
+              autocomplete="new-password"
+            />
+
+            @if (securityForm.controls.newPassword.touched &&
+                 securityForm.controls.newPassword.hasError('required')) {
+              <small>New password is required</small>
+            } @else if (securityForm.controls.newPassword.touched &&
+                        securityForm.controls.newPassword.hasError('minlength')) {
+              <small>Password must contain at least 8 characters</small>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+              id="confirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+            />
+
+            @if (securityForm.controls.confirmPassword.touched &&
+                 securityForm.controls.confirmPassword.invalid) {
+              <small>Password confirmation is required</small>
+            }
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="primary-button" type="submit" [disabled]="loading()">
+            {{ loading() ? 'Updating...' : 'Change Password' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</section>

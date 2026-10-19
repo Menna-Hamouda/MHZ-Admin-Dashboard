@@ -1,0 +1,238 @@
+
+<section class="products-page">
+
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">INVENTORY MANAGEMENT</p>
+      <h1>Products</h1>
+      <p class="page-description">
+        Manage your products, stock levels, and inventory.
+      </p>
+    </div>
+
+    <a routerLink="/products/new" class="primary-btn">
+      <span class="plus-icon">+</span>
+      Add Product
+    </a>
+  </header>
+
+  @if (successMessage) {
+    <div class="alert alert-success">{{ successMessage }}</div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  <div class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-icon purple">▦</div>
+      <div>
+        <p>Total Products</p>
+        <h2>{{ totalProducts }}</h2>
+        <span>Products in catalog</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon green">✓</div>
+      <div>
+        <p>Inventory Value</p>
+        <h2>{{ totalInventoryValue | currency:'USD':'symbol':'1.0-0' }}</h2>
+        <span>Estimated stock value</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon orange">!</div>
+      <div>
+        <p>Low Stock</p>
+        <h2>{{ lowStockCount }}</h2>
+        <span>Products need attention</span>
+      </div>
+    </article>
+
+    <article class="stat-card">
+      <div class="stat-icon red">×</div>
+      <div>
+        <p>Out of Stock</p>
+        <h2>{{ outOfStockCount }}</h2>
+        <span>Unavailable products</span>
+      </div>
+    </article>
+  </div>
+
+  <section class="products-panel">
+    <div class="panel-heading">
+      <div>
+        <h2>All Products</h2>
+        <p>Browse and manage your product catalog.</p>
+      </div>
+      <span class="results-count">
+        {{ filteredProducts.length }} products
+      </span>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Search products, brands..."
+          aria-label="Search products"
+        />
+      </div>
+
+      <select [(ngModel)]="selectedCategory" aria-label="Filter by category">
+        <option value="all">All Categories</option>
+        @for (category of categories; track category) {
+          <option [value]="category">{{ category }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="selectedStock" aria-label="Filter by stock">
+        <option value="all">All Stock</option>
+        <option value="in">In Stock</option>
+        <option value="low">Low Stock</option>
+        <option value="out">Out of Stock</option>
+      </select>
+
+      <select [(ngModel)]="sortBy" aria-label="Sort products">
+        <option value="default">Sort By</option>
+        <option value="price-low">Price: Low to High</option>
+        <option value="price-high">Price: High to Low</option>
+        <option value="name-az">Name: A to Z</option>
+        <option value="name-za">Name: Z to A</option>
+      </select>
+    </div>
+
+    @if (isLoading) {
+      <div class="state-message">
+        <span class="loader"></span>
+        <p>Loading products...</p>
+      </div>
+    } @else if (filteredProducts.length === 0) {
+      <div class="state-message">
+        <span class="empty-icon">⌕</span>
+        <h3>No products found</h3>
+        <p>Try changing your search or filters.</p>
+      </div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th class="actions-heading">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (product of filteredProducts; track product.id) {
+              <tr>
+                <td>
+                  <button
+                    class="product-cell"
+                    type="button"
+                    (click)="viewProduct(product.id)"
+                  >
+                    <img
+                      class="product-image"
+                      [src]="product.thumbnail"
+                      [alt]="product.title"
+                      loading="lazy"
+                    />
+                    <span class="product-info">
+                      <strong>{{ product.title }}</strong>
+                      <small>{{ product.brand || 'Unbranded' }}</small>
+                    </span>
+                  </button>
+                </td>
+
+                <td>
+                  <span class="category-label">{{ product.category }}</span>
+                </td>
+
+                <td class="price-cell">
+                  {{ product.price | currency:'USD':'symbol':'1.2-2' }}
+                </td>
+
+                <td>{{ product.stock }}</td>
+
+                <td>
+                  <span class="stock-badge" [ngClass]="getStockClass(product.stock)">
+                    <span class="status-dot"></span>
+                    {{ getStockLabel(product.stock) }}
+                  </span>
+                </td>
+
+                <td>
+                  <div class="action-buttons">
+                    <button
+                      type="button"
+                      class="icon-btn"
+                      title="View product"
+                      aria-label="View product"
+                      (click)="viewProduct(product.id)"
+                    >↗</button>
+
+                    <button
+                      type="button"
+                      class="icon-btn"
+                      title="Edit product"
+                      aria-label="Edit product"
+                      (click)="editProduct(product.id)"
+                    >✎</button>
+
+                    <button
+                      type="button"
+                      class="icon-btn delete-btn"
+                      title="Delete product"
+                      aria-label="Delete product"
+                      (click)="confirmDelete(product)"
+                    >⌫</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</section>
+
+@if (productToDelete) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <section
+      class="confirm-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-icon">!</div>
+      <h2 id="delete-title">Delete Product?</h2>
+      <p>
+        Are you sure you want to delete
+        <strong>{{ productToDelete.title }}</strong>?
+      </p>
+      <p class="modal-note">This action cannot be undone.</p>
+
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" (click)="cancelDelete()">
+          Cancel
+        </button>
+        <button class="danger-btn" type="button" (click)="deleteProduct()">
+          Delete Product
+        </button>
+      </div>
+    </section>
+  </div>
+}
+

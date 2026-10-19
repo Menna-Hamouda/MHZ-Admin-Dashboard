@@ -1,0 +1,229 @@
+
+<section class="order-details-page">
+  <button class="back-btn" type="button" (click)="goBack()">
+    ← Back to Orders
+  </button>
+
+  @if (isLoading) {
+    <div class="state-message">Loading order details...</div>
+  } @else if (errorMessage && !order) {
+    <div class="state-message error-text">{{ errorMessage }}</div>
+    <a routerLink="/orders" class="secondary-btn">Return to Orders</a>
+  } @else if (order) {
+    <header class="details-heading">
+      <div>
+        <p class="eyebrow">ORDER MANAGEMENT</p>
+        <h1>Order #{{ order.id }}</h1>
+        <p class="subtitle">
+          Placed on {{ order.date | date:'MMMM d, y' }}
+        </p>
+      </div>
+
+      <span
+        class="status-badge large"
+        [ngClass]="getStatusClass(order.status)"
+      >
+        <span class="status-dot"></span>
+        {{ order.status }}
+      </span>
+    </header>
+
+    @if (successMessage) {
+      <div class="alert alert-success">{{ successMessage }}</div>
+    }
+
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+
+    <div class="details-layout">
+      <div class="details-main">
+        <section class="details-card">
+          <div class="card-heading">
+            <div class="heading-icon">▤</div>
+            <div>
+              <h2>Order Items</h2>
+              <p>{{ order.products.length }} different products</p>
+            </div>
+          </div>
+
+          <div class="items-list">
+            @for (item of order.products; track item.id) {
+              <div class="order-item">
+                <img
+                  [src]="item.thumbnail"
+                  [alt]="item.title"
+                  class="item-image"
+                />
+
+                <div class="item-info">
+                  <strong>{{ item.title }}</strong>
+                  <span>Quantity: {{ item.quantity }}</span>
+                  <small>
+                    {{ item.price | currency:'USD':'symbol':'1.2-2' }}
+                    each
+                  </small>
+                </div>
+
+                <strong class="item-total">
+                  {{ item.total | currency:'USD':'symbol':'1.2-2' }}
+                </strong>
+              </div>
+            }
+          </div>
+        </section>
+
+        <section class="details-card">
+          <div class="card-heading">
+            <div class="heading-icon">▧</div>
+            <div>
+              <h2>Customer Information</h2>
+              <p>Customer details for this order</p>
+            </div>
+          </div>
+
+          <div class="customer-profile">
+            <div class="customer-avatar">
+              {{ order.customer.name.charAt(0).toUpperCase() }}
+            </div>
+
+            <div>
+              <h3>{{ order.customer.name }}</h3>
+              <p>{{ order.customer.email }}</p>
+            </div>
+          </div>
+
+          <div class="customer-details-grid">
+            <div class="customer-detail">
+              <span>Email Address</span>
+              <strong>{{ order.customer.email }}</strong>
+            </div>
+
+            <div class="customer-detail">
+              <span>Phone Number</span>
+              <strong>{{ order.customer.phone }}</strong>
+            </div>
+
+            <div class="customer-detail full-width">
+              <span>Address</span>
+              <strong>{{ order.customer.address }}</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="details-sidebar">
+        <section class="details-card summary-card">
+          <div class="card-heading">
+            <div class="heading-icon">＄</div>
+            <div>
+              <h2>Order Summary</h2>
+              <p>Payment breakdown</p>
+            </div>
+          </div>
+
+          <div class="summary-line">
+            <span>Subtotal</span>
+            <strong>
+              {{ order.subtotal | currency:'USD':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-line">
+            <span>Shipping</span>
+            <strong>
+              {{ order.shipping | currency:'USD':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total">
+            <span>Total</span>
+            <strong>
+              {{ order.total | currency:'USD':'symbol':'1.2-2' }}
+            </strong>
+          </div>
+
+          <p class="summary-note">
+            Shipping is a demo estimate and may differ from actual charges.
+          </p>
+        </section>
+
+        <section class="details-card status-card">
+          <div class="card-heading">
+            <div class="heading-icon">↻</div>
+            <div>
+              <h2>Order Status</h2>
+              <p>Update the fulfillment status</p>
+            </div>
+          </div>
+
+          <div class="current-status">
+            <span>Current status</span>
+            <span
+              class="status-badge"
+              [ngClass]="getStatusClass(order.status)"
+            >
+              <span class="status-dot"></span>
+              {{ order.status }}
+            </span>
+          </div>
+
+          @if (canChangeStatus) {
+            <label class="status-label" for="nextStatus">
+              Move order to
+            </label>
+
+            <select
+              id="nextStatus"
+              class="status-select"
+              [value]="selectedStatus"
+              (change)="selectedStatus = $any($event.target).value"
+              [disabled]="isSavingStatus"
+            >
+              <option [value]="order.status">
+                {{ order.status }} (Current)
+              </option>
+
+              @for (status of allowedTransitions; track status) {
+                <option [value]="status">{{ status }}</option>
+              }
+            </select>
+
+            <p class="transition-hint">
+              Only valid status transitions are available.
+            </p>
+
+            <div class="status-actions">
+              <button
+                class="secondary-btn"
+                type="button"
+                (click)="cancelStatusChange()"
+                [disabled]="isSavingStatus"
+              >
+                Reset
+              </button>
+
+              <button
+                class="primary-btn"
+                type="button"
+                (click)="saveStatus()"
+                [disabled]="isSavingStatus || selectedStatus === order.status"
+              >
+                {{ isSavingStatus ? 'Saving...' : 'Update Status' }}
+              </button>
+            </div>
+          } @else {
+            <div class="final-status">
+              <span class="final-status-icon">✓</span>
+              <strong>This order is {{ order.status.toLowerCase() }}.</strong>
+              <p>No further status changes are allowed.</p>
+            </div>
+          }
+        </section>
+      </aside>
+    </div>
+  }
+</section>
+

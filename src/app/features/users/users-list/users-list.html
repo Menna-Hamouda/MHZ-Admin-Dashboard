@@ -1,0 +1,200 @@
+
+<section class="users-page">
+  <header class="page-header">
+    <div>
+      <h1>Users</h1>
+      <p>Manage your users</p>
+    </div>
+
+    <a class="primary-btn" routerLink="/users/new">
+      <span aria-hidden="true">+</span> Add User
+    </a>
+  </header>
+
+  @if (successMessage) {
+    <div class="toast success-toast" role="status">
+      ✓ {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert-error" role="alert">
+      {{ errorMessage }}
+      <button type="button" (click)="loadUsers()">Try Again</button>
+    </div>
+  }
+
+  <div class="users-toolbar">
+    <input
+      class="search-input"
+      type="search"
+      placeholder="Search users..."
+      aria-label="Search users"
+      [(ngModel)]="searchTerm"
+    />
+
+    <label class="filter">
+      <span>Role</span>
+      <select [(ngModel)]="selectedRole">
+        <option value="All">All</option>
+        <option value="Admin">Admin</option>
+        <option value="Manager">Manager</option>
+        <option value="Employee">Employee</option>
+      </select>
+    </label>
+
+    <label class="filter">
+      <span>Status</span>
+      <select [(ngModel)]="selectedStatus">
+        <option value="All">All</option>
+        <option value="Active">Active</option>
+        <option value="Blocked">Blocked</option>
+      </select>
+    </label>
+  </div>
+
+  <section class="users-card">
+    <header class="table-heading">
+      <div>
+        <h2>All Users</h2>
+        <p>View and manage your team members</p>
+      </div>
+      <span class="users-count">{{ filteredUsers.length }} users</span>
+    </header>
+
+    @if (isLoading) {
+      <div class="table-message" role="status">Loading users...</div>
+    } @else {
+      <div class="table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (user of filteredUsers; track user.id) {
+              <tr>
+                <td class="muted">
+                  {{ user.id.toString().padStart(2, '0') }}
+                </td>
+
+                <td>
+                  <div class="user-info">
+                    <img
+                      class="user-avatar"
+                      [src]="user.image"
+                      [alt]="user.firstName + ' ' + user.lastName"
+                    />
+                    <span class="user-name">
+                      {{ user.firstName }} {{ user.lastName }}
+                    </span>
+                  </div>
+                </td>
+
+                <td class="muted">{{ user.email }}</td>
+
+                <td>
+                  <span class="role-badge" [class]="
+                    'role-badge ' + user.role.toLowerCase()
+                  ">{{ user.role }}</span>
+                </td>
+
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.active]="user.status === 'Active'"
+                    [class.blocked]="user.status === 'Blocked'"
+                  >
+                    <span class="status-dot"></span>
+                    {{ user.status }}
+                  </span>
+                </td>
+
+                <td class="actions-cell">
+                  <button
+                    class="actions-btn"
+                    type="button"
+                    [attr.aria-expanded]="openMenuId === user.id"
+                    [attr.aria-label]="'Actions for ' + user.firstName"
+                    (click)="toggleMenu(user.id)"
+                  >⋮</button>
+
+                  @if (openMenuId === user.id) {
+                    <div class="actions-menu">
+                      <button type="button" (click)="viewUser(user.id)">
+                        View
+                      </button>
+                      <button type="button" (click)="editUser(user.id)">
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        class="delete-action"
+                        (click)="askDelete(user)"
+                      >Delete</button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              @if (!isLoading && !errorMessage) {
+                <tr>
+                  <td colspan="6" class="empty-state">
+                    No users found. Try changing your search or filters.
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="table-footer">
+        Showing {{ filteredUsers.length }} of {{ users.length }} users
+      </footer>
+    }
+  </section>
+</section>
+
+@if (userToDelete; as user) {
+  <div class="modal-backdrop">
+    <section
+      class="confirm-modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-title"
+    >
+      <div class="modal-icon">!</div>
+      <h2 id="delete-title">Delete User?</h2>
+      <p>
+        Are you sure you want to delete
+        {{ user.firstName }} {{ user.lastName }}?
+      </p>
+
+      <div class="modal-actions">
+        <button
+          class="secondary-btn"
+          type="button"
+          [disabled]="isDeleting"
+          (click)="cancelDelete()"
+        >Cancel</button>
+
+        <button
+          class="danger-btn"
+          type="button"
+          [disabled]="isDeleting"
+          (click)="confirmDelete()"
+        >
+          {{ isDeleting ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </section>
+  </div>
+}
