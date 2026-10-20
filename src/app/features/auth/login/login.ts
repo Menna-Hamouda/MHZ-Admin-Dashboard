@@ -25,6 +25,24 @@ export class Login {
   loading = signal(false);
   errorMessage = signal('');
 
+
+
+
+
+
+
+
+  fillDemoCredentials() {
+  this.loginForm.patchValue({
+    email: 'emilys',
+    password: 'emilyspass'
+  });
+}
+
+
+
+
+
 loginForm = this.fb.nonNullable.group({
   email: ['', Validators.required],
   password: ['', Validators.required],

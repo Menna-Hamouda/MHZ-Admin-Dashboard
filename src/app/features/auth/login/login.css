@@ -3,6 +3,102 @@
   min-height: 100vh;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* 🟢 Demo Credentials Box Styling */
+.demo-box {
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  background: var(--color-bg-secondary);
+  border: 1px dashed var(--color-primary-light);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.demo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.demo-badge {
+  padding: 2px 8px;
+  color: #ffffff;
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.demo-title {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+}
+
+.demo-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.demo-credentials p {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.demo-credentials code {
+  padding: 2px 6px;
+  color: var(--color-primary-light);
+  background: rgba(147, 51, 234, 0.12);
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.btn-fill-demo {
+  width: 100%;
+  padding: 6px 10px;
+  color: var(--color-primary-light);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-fill-demo:hover {
+  color: #ffffff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 .login-page {
   position: relative;
   display: grid;

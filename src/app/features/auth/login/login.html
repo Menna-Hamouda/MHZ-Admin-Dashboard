@@ -13,6 +13,57 @@
       <p>Enter your credentials to access your account.</p>
     </div>
 
+
+
+    <div class="login-heading">
+      <h1>Welcome Back</h1>
+      <p>Enter your credentials to access your account.</p>
+    </div>
+
+    
+    <div class="demo-box">
+      <div class="demo-header">
+        <span class="demo-badge">Demo Account</span>
+        <span class="demo-title">For Reviewers & Recruiters</span>
+      </div>
+      <div class="demo-credentials">
+        <p><strong>Username:</strong> <code>emilys</code></p>
+        <p><strong>Password:</strong> <code>emilyspass</code></p>
+      </div>
+      
+      <button type="button" class="btn-fill-demo" (click)="fillDemoCredentials()">
+        Auto-fill Credentials ⚡
+      </button>
+    </div>
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
       <div class="form-field">
         <label for="email">Username</label>
